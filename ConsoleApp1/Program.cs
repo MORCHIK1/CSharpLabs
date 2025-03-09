@@ -3,7 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace ConsoleApp1
-{ 
+{
+  interface IDateAndCopy
+  {
+    object DeepCopy();
+    System.DateTime Date { get; set; }
+  }
   enum Education
   {
     Master,

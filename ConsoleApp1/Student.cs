@@ -3,17 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace ConsoleApp1
 {
-  class Student
+  class Student : IDateAndCopy
   {
     private Person _studentInformation = default!;
     private Education _formOfEducation = default!;
     private int _groupNumber;
     private Exam[] _listOfExams;
 
-    public Student(Person studentInformation, Education formOfEducation, int groupNumber, Exam[] listOfExams)
+    public Student(Person studentInformation,
+                   Education formOfEducation,
+                   int groupNumber,
+                   Exam[] listOfExams)
     {
       StudentInformation = studentInformation;
       FormOfEducation = formOfEducation;
@@ -21,7 +25,10 @@ namespace ConsoleApp1
       ListOfExams = listOfExams;
     }
 
-    public Student() : this(studentInformation: new(), formOfEducation: new(), groupNumber: 0, listOfExams: [])
+    public Student() : this(studentInformation: new(),
+                            formOfEducation: new(),
+                            groupNumber: 0,
+                            listOfExams: [])
     { }
 
     public Person StudentInformation
@@ -48,6 +55,8 @@ namespace ConsoleApp1
 
     public double Average => ListOfExams.Any() ? ListOfExams.Average(exam => exam.Grade) : 0.0;
 
+    public DateTime Date { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
     public bool this[Education sameFormOfEducation] => sameFormOfEducation == FormOfEducation;
 
     public void AddExams(Exam[] newExam)
@@ -69,6 +78,12 @@ namespace ConsoleApp1
     public string ToShortString()
     {
       return StudentInformation.ToString() + ' ' + FormOfEducation.ToString() + ' ' + GroupNumber.ToString() + ' ' + Average.ToString() + ' ';
+    }
+
+    public virtual object DeepCopy()
+    {
+      Student copied = new Student(StudentInformation,FormOfEducation, GroupNumber, ListOfExams);
+      return copied;
     }
   }
 
