@@ -77,7 +77,7 @@ namespace ConsoleApp1
       return HashCode.Combine(Name, Surname, Birthday);
     }
 
-    public DateTime Date { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public DateTime Date { get => new DateTime(); init => Date = value; }
     public virtual object DeepCopy()
     {
       Person copied = new Person(Name, Surname, Birthday);

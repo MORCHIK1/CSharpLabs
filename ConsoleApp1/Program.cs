@@ -7,7 +7,7 @@ namespace ConsoleApp1
   interface IDateAndCopy
   {
     object DeepCopy();
-    System.DateTime Date { get; set; }
+    System.DateTime Date { get; init; }
   }
   enum Education
   {

@@ -54,8 +54,7 @@ namespace ConsoleApp1
     }
 
     public double Average => ListOfExams.Any() ? ListOfExams.Average(exam => exam.Grade) : 0.0;
-
-    public DateTime Date { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public DateTime Date { get => new DateTime(); init => Date = value; }
 
     public bool this[Education sameFormOfEducation] => sameFormOfEducation == FormOfEducation;
 
