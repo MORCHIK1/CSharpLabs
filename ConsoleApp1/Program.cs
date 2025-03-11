@@ -131,18 +131,29 @@ class Student
 
   public void AddExams(Exam[] newExam)
   {
+    if (newExam is null || newExam.Length == 0)
+    {
+      return;
+    }
+
+    if (ListOfExams is null || ListOfExams.Length == 0) { 
+      ListOfExams = newExam;
+      return;
+    } 
+
     Array.Resize<Exam>(ref _listOfExams, ListOfExams.Length + newExam.Length);
     Array.Copy(newExam, 0, ListOfExams, ListOfExams.Length - newExam.Length, newExam.Length);
   }
 
   public override string ToString()
   {
-    string res = StudentInformation.ToString() + ' ' + FormOfEducation.ToString() + ' ' + GroupNumber.ToString() + ' ';
+    StringBuilder res = new StringBuilder(StudentInformation.ToString() + ' ' + FormOfEducation.ToString() + ' ' + GroupNumber.ToString() + ' ');
     for (int i = 0; i < ListOfExams.Length; ++i)
     {
-      res += ListOfExams[i].ToString();
+      res.Append(ListOfExams[i].ToString());
     }
-    return res;
+
+    return res.ToString();
   }
 
   public string ToShortString()
