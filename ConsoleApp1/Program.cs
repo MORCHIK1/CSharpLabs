@@ -125,7 +125,19 @@ class Student
     init { _listOfExams = value; }
   }
 
-  public double Average => ListOfExams.Any() ? ListOfExams.Average(exam => exam.Grade) : 0.0;
+  public double Average
+  {
+    get
+    {
+      double res = 0.0;
+      foreach (Exam examGrade in ListOfExams)
+      {
+        res += examGrade.Grade;
+      }
+      res = ListOfExams.Length == 0 ? 0 : res / ListOfExams.Length;
+      return res;
+    }
+  }
 
   public bool this[Education sameFormOfEducation] => sameFormOfEducation == FormOfEducation;
 
