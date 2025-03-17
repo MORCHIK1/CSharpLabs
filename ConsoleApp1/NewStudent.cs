@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,25 +7,37 @@ using System.Threading.Tasks;
 
 namespace ConsoleApp1
 {
-    class NewStudent : IDateAndCopy
-    {
+    class NewStudent : Person, IDateAndCopy, IEnumerable
+  {
+    public Person StudentPerson { get; init; } = new Person();
     private Education _formOfEducation;
     private int _groupNumber;
-    private System.Collections.ArrayList _testList ;
+    private System.Collections.ArrayList _testList;
     private System.Collections.ArrayList _examList;
 
-    public NewStudent(Education formOfEducation,
+    public NewStudent(Person studentPerson,
+               Education formOfEducation,
                int groupNumber,
                System.Collections.ArrayList testList,
                System.Collections.ArrayList examList)
     {
+      StudentPerson = studentPerson;
       FormOfEducation = formOfEducation;
       GroupNumber = groupNumber;
       TestList = testList;
       ExamList = examList;
     }
+    public NewStudent(Person studentPerson,
+                    Education formOfEducation,
+                    int groupNumber)
+    {
+      StudentPerson = studentPerson;
+      FormOfEducation = formOfEducation;
+      GroupNumber = groupNumber;
+    }
 
-    public NewStudent() : this(formOfEducation: new(),
+    public NewStudent() : this(studentPerson: new Person(),
+                            formOfEducation: new(),
                             groupNumber: new(),
                             testList: [],
                             examList: [])
@@ -38,7 +51,13 @@ namespace ConsoleApp1
     public int GroupNumber
     {
       get { return _groupNumber; }
-      init { _groupNumber = value; }
+      init { 
+        if(value <= 100 || value > 699)
+        {
+          throw new ArgumentOutOfRangeException(nameof(GroupNumber), "Invalid group number! Group number should be in (100; 699) range");
+        }  
+        _groupNumber = value; 
+      }
     }
     public System.Collections.ArrayList TestList
     {
@@ -48,10 +67,8 @@ namespace ConsoleApp1
     public System.Collections.ArrayList ExamList
     {
       get { return _examList; }
-      init { _examList = value; }
+      set { _examList = value; }
     }
-
-    public Person StudentPerson { get; init; } = new Person();
 
     public double Average
     {
@@ -67,26 +84,35 @@ namespace ConsoleApp1
       }
     }
 
-    public DateTime Date { get => new DateTime(); init => Date = value; }
-
     public void AddExams(System.Collections.ArrayList newExamList)
     {
-      ExamList.Add(newExamList);
+      if(ExamList is null)
+      {
+        ExamList = newExamList;
+        return;
+      }
+
+      for(int i=0; i<newExamList.Count; ++i)
+      {
+        ExamList.Add(newExamList[i]);
+      }
     }
 
     public override string ToString()
     {
-      string res = FormOfEducation.ToString() + ' ' + GroupNumber.ToString() + ' ';
+      StringBuilder res = new StringBuilder(FormOfEducation.ToString() + ' ' + GroupNumber.ToString() + ' ');
       for (int i = 0; i < ExamList.Count; ++i)
       {
-        res += ExamList[i].ToString();
+        res.Append(ExamList[i].ToString());
       }
-      res += ' ';
+
+      res.Append(' ');
+
       for (int i = 0; i < TestList.Count; ++i)
       {
-        res += TestList[i].ToString();
+        res.Append(TestList[i].ToString());
       }
-      return res;
+      return res.ToString();
     }
 
     public string ToShortString()
@@ -96,8 +122,30 @@ namespace ConsoleApp1
 
     public virtual object DeepCopy()
     {
-      NewStudent copied = new NewStudent(FormOfEducation, GroupNumber, TestList, ExamList);
+      System.Collections.ArrayList CopiedExamList = [];
+      System.Collections.ArrayList CopiedTestList = [];
+      Person CopiedStudentPerson = (Person)StudentPerson.DeepCopy();
+
+      for (int i = 0; i < ExamList.Count; ++i)
+      {
+        CopiedExamList.Add(((Exam)ExamList[i]).DeepCopy());
+      }
+
+      for (int i = 0; i < TestList.Count; ++i)
+      {
+        CopiedTestList.Add(((Test)TestList[i]).DeepCopy());
+      }
+
+      NewStudent copied = new NewStudent(CopiedStudentPerson,
+                                       FormOfEducation,
+                                       GroupNumber,
+                                       testList: CopiedTestList,
+                                       examList: CopiedExamList);
       return copied;
+    }
+    public IEnumerator GetEnumerator()
+    {
+      throw new NotImplementedException();
     }
   }
 }

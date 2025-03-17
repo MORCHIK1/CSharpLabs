@@ -12,7 +12,7 @@ namespace ConsoleApp1
     private string _name = default!;
     private string _surname = default!;
     private System.DateTime _birthday = default!;
-
+    public DateTime Date { get => _birthday; init => _birthday = value; }
     public Person(string name,
                   string surname,
                   System.DateTime birthday)
@@ -76,8 +76,6 @@ namespace ConsoleApp1
     {
       return HashCode.Combine(Name, Surname, Birthday);
     }
-
-    public DateTime Date { get => new DateTime(); init => Date = value; }
     public virtual object DeepCopy()
     {
       Person copied = new Person(Name, Surname, Birthday);

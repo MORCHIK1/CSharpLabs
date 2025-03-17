@@ -50,28 +50,51 @@ namespace ConsoleApp1
     public Exam[] ListOfExams
     {
       get { return _listOfExams; }
-      init { _listOfExams = value; }
+      set { _listOfExams = value; }
     }
-
-    public double Average => ListOfExams.Any() ? ListOfExams.Average(exam => exam.Grade) : 0.0;
+    public double Average
+    {
+      get
+      {
+        double res = 0.0;
+        foreach (Exam examGrade in ListOfExams)
+        {
+          res += examGrade.Grade;
+        }
+        res = ListOfExams.Length == 0 ? 0 : res / ListOfExams.Length;
+        return res;
+      }
+    }
     public DateTime Date { get => new DateTime(); init => Date = value; }
 
     public bool this[Education sameFormOfEducation] => sameFormOfEducation == FormOfEducation;
 
     public void AddExams(Exam[] newExam)
     {
+      if (newExam is null || newExam.Length == 0)
+      {
+        return;
+      }
+
+      if (ListOfExams is null || ListOfExams.Length == 0)
+      {
+        ListOfExams = newExam;
+        return;
+      }
+
       Array.Resize<Exam>(ref _listOfExams, ListOfExams.Length + newExam.Length);
       Array.Copy(newExam, 0, ListOfExams, ListOfExams.Length - newExam.Length, newExam.Length);
     }
 
     public override string ToString()
     {
-      string res = StudentInformation.ToString() + ' ' + FormOfEducation.ToString() + ' ' + GroupNumber.ToString() + ' ';
+      StringBuilder res = new StringBuilder(StudentInformation.ToString() + ' ' + FormOfEducation.ToString() + ' ' + GroupNumber.ToString() + ' ');
       for (int i = 0; i < ListOfExams.Length; ++i)
       {
-        res += ListOfExams[i].ToString();
+        res.Append(ListOfExams[i].ToString());
       }
-      return res;
+
+      return res.ToString();
     }
 
     public string ToShortString()
@@ -81,7 +104,14 @@ namespace ConsoleApp1
 
     public virtual object DeepCopy()
     {
-      Student copied = new Student(StudentInformation,FormOfEducation, GroupNumber, ListOfExams);
+      Exam[] CopiedList = [];
+
+      for (int i=0; i<ListOfExams.Length; ++i)
+      {
+        CopiedList[i] = (Exam)ListOfExams[i].DeepCopy();
+      }
+
+      Student copied = new Student(StudentInformation,FormOfEducation, GroupNumber, CopiedList);
       return copied;
     }
   }
