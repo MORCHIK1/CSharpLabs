@@ -16,7 +16,7 @@ namespace ConsoleApp1
     Bachelor,
     SecondEducation
   };
-    class Program
+  class Program
   {
     public static void Main()
     {
@@ -26,10 +26,11 @@ namespace ConsoleApp1
       if (A.Equals(B)) Console.WriteLine($"{A.GetHashCode()}, {B.GetHashCode()}");
 
       Exam mathExam = new Exam("Math", 5, new DateTime());
+      Test test = new Test("History", true);
 
-      NewStudent GreatStudent = new NewStudent(A, Education.Master, 500, [], [mathExam]);
+      NewStudent GreatStudent = new NewStudent(A, Education.Master, 500, [test], [mathExam]);
 
-      
+
       Exam programmingExam = new Exam("Programming", 2, new DateTime());
       Exam algebraExam = new Exam("Algebra", 4, new DateTime());
       Exam geometryExam = new Exam("Geometry", 5, new DateTime());
@@ -52,6 +53,16 @@ namespace ConsoleApp1
       Console.WriteLine(CheapCopy);
 
 
+      foreach (var item in GreatStudent)
+      {
+        Console.WriteLine($"Foreach items: {item}");
+      }
+
+      foreach (Exam item in GreatStudent.GetExamsAboveScore(3))
+      {
+        Console.WriteLine(item);
+      }
+
       try
       {
         NewStudent ErrorGroupStudent = new NewStudent(A, Education.Master, 700, [], []);
@@ -60,7 +71,7 @@ namespace ConsoleApp1
       {
         Console.WriteLine($"{err.Message}");
       }
-      
+
     }
   }
 }

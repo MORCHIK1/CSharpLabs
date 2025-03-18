@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ConsoleApp1;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleApp1
 {
-    class NewStudent : Person, IDateAndCopy, IEnumerable
+  class NewStudent : Person, IDateAndCopy, IEnumerable
   {
     public Person StudentPerson { get; init; } = new Person();
     private Education _formOfEducation;
@@ -51,12 +52,13 @@ namespace ConsoleApp1
     public int GroupNumber
     {
       get { return _groupNumber; }
-      init { 
-        if(value <= 100 || value > 699)
+      init
+      {
+        if (value <= 100 || value > 699)
         {
           throw new ArgumentOutOfRangeException(nameof(GroupNumber), "Invalid group number! Group number should be in (100; 699) range");
-        }  
-        _groupNumber = value; 
+        }
+        _groupNumber = value;
       }
     }
     public System.Collections.ArrayList TestList
@@ -86,13 +88,13 @@ namespace ConsoleApp1
 
     public void AddExams(System.Collections.ArrayList newExamList)
     {
-      if(ExamList is null)
+      if (ExamList is null)
       {
         ExamList = newExamList;
         return;
       }
 
-      for(int i=0; i<newExamList.Count; ++i)
+      for (int i = 0; i < newExamList.Count; ++i)
       {
         ExamList.Add(newExamList[i]);
       }
@@ -145,7 +147,67 @@ namespace ConsoleApp1
     }
     public IEnumerator GetEnumerator()
     {
-      throw new NotImplementedException();
+      foreach (var test in TestList)
+      {
+        ExamList.Add(test);
+      }
+      return new ExamAndTestEnum(ExamList);
+    }
+
+    public IEnumerable<Exam> GetExamsAboveScore(int minScore)
+    {
+      foreach (var item in ExamList)
+      {
+        if (item is Exam && ((Exam)item).Grade > minScore)
+        {
+          yield return ((Exam)item);
+        }
+      }
+    }
+
+  }
+}
+public class ExamAndTestEnum : IEnumerator
+{
+  public System.Collections.ArrayList _students;
+  int position = -1;
+
+  public ExamAndTestEnum(ArrayList students)
+  {
+    _students = students;
+  }
+
+  public bool MoveNext()
+  {
+    position++;
+    return (position < _students.Count);
+  }
+
+  public void Reset()
+  {
+    position = -1;
+  }
+
+  object IEnumerator.Current
+  {
+    get
+    {
+      return Current;
+    }
+  }
+
+  public object Current
+  {
+    get
+    {
+      try
+      {
+        return _students[position];
+      }
+      catch (IndexOutOfRangeException)
+      {
+        throw new InvalidOperationException();
+      }
     }
   }
 }
