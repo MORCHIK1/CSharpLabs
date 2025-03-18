@@ -1,5 +1,4 @@
-﻿/*
-using ConsoleApp1;
+﻿using ConsoleApp1;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,19 +8,19 @@ using System.Threading.Tasks;
 
 namespace ConsoleApp1
 {
-  class NewStudent : Person, IDateAndCopy, IEnumerable
+  class StudentTheThird : PersonTheThird, IDateAndCopy, IEnumerable
   {
-    public Person StudentPerson { get; init; } = new Person();
+    public PersonTheThird StudentPerson { get; init; } = new PersonTheThird();
     private Education _formOfEducation;
     private int _groupNumber;
-    private System.Collections.ArrayList _testList;
-    private System.Collections.ArrayList _examList;
+    private List<Test> _testList;
+    private List<Exam> _examList;
 
-    public NewStudent(Person studentPerson,
+    public StudentTheThird(PersonTheThird studentPerson,
                Education formOfEducation,
                int groupNumber,
-               System.Collections.ArrayList testList,
-               System.Collections.ArrayList examList)
+               List<Test> testList,
+               List<Exam> examList)
     {
       StudentPerson = studentPerson;
       FormOfEducation = formOfEducation;
@@ -29,7 +28,7 @@ namespace ConsoleApp1
       TestList = testList;
       ExamList = examList;
     }
-    public NewStudent(Person studentPerson,
+    public StudentTheThird(PersonTheThird studentPerson,
                     Education formOfEducation,
                     int groupNumber)
     {
@@ -38,7 +37,7 @@ namespace ConsoleApp1
       GroupNumber = groupNumber;
     }
 
-    public NewStudent() : this(studentPerson: new Person(),
+    public StudentTheThird() : this(studentPerson: new PersonTheThird(),
                             formOfEducation: new(),
                             groupNumber: new(),
                             testList: [],
@@ -62,12 +61,13 @@ namespace ConsoleApp1
         _groupNumber = value;
       }
     }
-    public System.Collections.ArrayList TestList
+
+    public List<Test> TestList
     {
       get { return _testList; }
       init { _testList = value; }
     }
-    public System.Collections.ArrayList ExamList
+    public List<Exam> ExamList
     {
       get { return _examList; }
       set { _examList = value; }
@@ -87,7 +87,7 @@ namespace ConsoleApp1
       }
     }
 
-    public void AddExams(System.Collections.ArrayList newExamList)
+    public void AddExams(List<Exam> newExamList)
     {
       if (ExamList is null)
       {
@@ -103,43 +103,43 @@ namespace ConsoleApp1
 
     public override string ToString()
     {
-      StringBuilder res = new StringBuilder(FormOfEducation.ToString() + ' ' + GroupNumber.ToString() + ' ');
-      for (int i = 0; i < ExamList.Count; ++i)
+      StringBuilder res = new StringBuilder(StudentPerson.ToString() + ' ' + FormOfEducation.ToString() + ' ' + GroupNumber.ToString() + ' ');
+      foreach (Exam item in ExamList)
       {
-        res.Append(ExamList[i].ToString());
+        res.Append(item.ToString());
       }
 
       res.Append(' ');
 
-      for (int i = 0; i < TestList.Count; ++i)
+      foreach(Test item in TestList)
       {
-        res.Append(TestList[i].ToString());
+        res.Append(item.ToString());
       }
       return res.ToString();
     }
 
-    public string ToShortString()
+    public override string ToShortString()
     {
-      return FormOfEducation.ToString() + ' ' + GroupNumber.ToString() + ' ' + Average.ToString() + ' ';
+      return StudentPerson.ToString() + ' ' + FormOfEducation.ToString() + ' ' + GroupNumber.ToString() + ' ' + Average.ToString() + ' ';
     }
 
-    public virtual object DeepCopy()
+    public override object DeepCopy()
     {
-      System.Collections.ArrayList CopiedExamList = [];
-      System.Collections.ArrayList CopiedTestList = [];
-      Person CopiedStudentPerson = (Person)StudentPerson.DeepCopy();
+      List<Exam> CopiedExamList = [];
+      List<Test> CopiedTestList = [];
+      PersonTheThird CopiedStudentPerson = (PersonTheThird)StudentPerson.DeepCopy();
 
-      for (int i = 0; i < ExamList.Count; ++i)
+      foreach (Exam item in ExamList)
       {
-        CopiedExamList.Add(((Exam)ExamList[i]).DeepCopy());
+        CopiedExamList.Add((Exam)item.DeepCopy());
       }
 
-      for (int i = 0; i < TestList.Count; ++i)
+      foreach (Test item in TestList)
       {
-        CopiedTestList.Add(((Test)TestList[i]).DeepCopy());
+        CopiedTestList.Add((Test)item.DeepCopy());
       }
 
-      NewStudent copied = new NewStudent(CopiedStudentPerson,
+      StudentTheThird copied = new StudentTheThird(CopiedStudentPerson,
                                        FormOfEducation,
                                        GroupNumber,
                                        testList: CopiedTestList,
@@ -148,11 +148,12 @@ namespace ConsoleApp1
     }
     public IEnumerator GetEnumerator()
     {
-      foreach (var test in TestList)
-      {
-        ExamList.Add(test);
-      }
-      return new ExamAndTestEnum(ExamList);
+      var ExamsAndTests = new List<object>(ExamList.Count +
+                                          TestList.Count);
+      ExamsAndTests.AddRange(ExamList);
+      ExamsAndTests.AddRange(TestList);
+
+      return new ExamAndTestEnum(ExamsAndTests);
     }
 
     public IEnumerable<Exam> GetExamsAboveScore(int minScore)
@@ -170,10 +171,10 @@ namespace ConsoleApp1
 }
 public class ExamAndTestEnum : IEnumerator
 {
-  public System.Collections.ArrayList _students;
+  public List<object> _students;
   int position = -1;
 
-  public ExamAndTestEnum(ArrayList students)
+  public ExamAndTestEnum(List<object> students)
   {
     _students = students;
   }
@@ -211,4 +212,4 @@ public class ExamAndTestEnum : IEnumerator
       }
     }
   }
-}*/
+}

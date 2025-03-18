@@ -20,21 +20,21 @@ namespace ConsoleApp1
   {
     public static void Main()
     {
-      Person A = new Person("Tester", "Texter", new DateTime(2004, 6, 1, 7, 47, 0));
-      Person B = new Person("Tester", "Texter", new DateTime(2004, 6, 1, 7, 47, 0));
+      PersonTheThird A = new PersonTheThird("Tester", "Texter", new DateTime(2004, 6, 1, 7, 47, 0));
+      PersonTheThird B = new PersonTheThird("Tester", "Texter", new DateTime(2004, 6, 1, 7, 47, 0));
 
       if (A.Equals(B)) Console.WriteLine($"{A.GetHashCode()}, {B.GetHashCode()}");
 
       Exam mathExam = new Exam("Math", 5, new DateTime());
       Test test = new Test("History", true);
 
-      NewStudent GreatStudent = new NewStudent(A, Education.Master, 500, [test], [mathExam]);
+      StudentTheThird GreatStudent = new StudentTheThird(A, Education.Master, 500, [test], [mathExam]);
 
 
       Exam programmingExam = new Exam("Programming", 2, new DateTime());
       Exam algebraExam = new Exam("Algebra", 4, new DateTime());
       Exam geometryExam = new Exam("Geometry", 5, new DateTime());
-      System.Collections.ArrayList ExamsList = [mathExam, programmingExam, algebraExam, geometryExam];
+      List<Exam> ExamsList = [mathExam, programmingExam, algebraExam, geometryExam];
 
       GreatStudent.AddExams(ExamsList);
 
@@ -42,9 +42,9 @@ namespace ConsoleApp1
 
       Console.WriteLine(GreatStudent.StudentPerson);
 
-      NewStudent CheapCopy = (NewStudent)GreatStudent.DeepCopy();
+      StudentTheThird CheapCopy = (StudentTheThird)GreatStudent.DeepCopy();
 
-      System.Collections.ArrayList ExamsForCopyTest = [programmingExam, programmingExam];
+      List<Exam> ExamsForCopyTest = [programmingExam, programmingExam];
 
       GreatStudent.AddExams(ExamsForCopyTest);
 
@@ -65,7 +65,7 @@ namespace ConsoleApp1
 
       try
       {
-        NewStudent ErrorGroupStudent = new NewStudent(A, Education.Master, 700, [], []);
+        StudentTheThird ErrorGroupStudent = new StudentTheThird(A, Education.Master, 700, [], []);
       }
       catch (Exception err)
       {

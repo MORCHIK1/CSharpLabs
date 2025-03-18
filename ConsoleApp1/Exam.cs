@@ -12,7 +12,7 @@ namespace ConsoleApp1
     public string SubjectName { get; set; }
     public int Grade { get; set; }
     public DateTime ExamDate { get; set; }
-    public DateTime Date { get => new DateTime(); init => Date = value; }
+    public DateTime Date { get => ExamDate; init => ExamDate = value; }
 
     public Exam(string subjectName,
                 int grade,

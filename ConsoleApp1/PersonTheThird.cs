@@ -1,4 +1,4 @@
-﻿/*using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,13 +7,13 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ConsoleApp1
 {
-  class Person : IDateAndCopy
+  class PersonTheThird : IDateAndCopy, IComparable, IComparer<PersonTheThird>
   {
     private string _name = default!;
     private string _surname = default!;
     private System.DateTime _birthday = default!;
     public DateTime Date { get => _birthday; init => _birthday = value; }
-    public Person(string name,
+    public PersonTheThird(string name,
                   string surname,
                   System.DateTime birthday)
     {
@@ -22,7 +22,7 @@ namespace ConsoleApp1
       Birthday = birthday;
     }
 
-    public Person() : this(name: "Default Name",
+    public PersonTheThird() : this(name: "Default Name",
                            surname: "Default Surname",
                            birthday: new DateTime())
     { }
@@ -66,7 +66,7 @@ namespace ConsoleApp1
 
     public override bool Equals(object? obj)
     {
-      return obj is Person person &&
+      return obj is PersonTheThird person &&
              Name == person.Name &&
              Surname == person.Surname &&
              Birthday == person.Birthday;
@@ -78,12 +78,25 @@ namespace ConsoleApp1
     }
     public virtual object DeepCopy()
     {
-      Person copied = new Person(Name, Surname, Birthday);
+      PersonTheThird copied = new PersonTheThird(Name, Surname, Birthday);
       return copied;
     }
 
-    public static bool operator ==(Person a, Person b) => a.Name == b.Name && a.Surname == b.Surname && a.Birthday == b.Birthday;
-    public static bool operator !=(Person a, Person b) => a.Name != b.Name && a.Surname != b.Surname && a.Birthday != b.Birthday;
+    public int CompareTo(object? obj)
+    {
+      if(obj is string)
+      {
+        return _surname.CompareTo(obj);
+      }
+      throw new ArgumentException("Object is not a Person");
+    }
+    int IComparer<PersonTheThird>.Compare(PersonTheThird? x, PersonTheThird? y)
+    {
+      if(x is null || y is null) throw new NullReferenceException("One of the Persons is null");
+      return x.Date.CompareTo(y.Date);
+    }
+
+    public static bool operator ==(PersonTheThird a, PersonTheThird b) => a.Name == b.Name && a.Surname == b.Surname && a.Birthday == b.Birthday;
+    public static bool operator !=(PersonTheThird a, PersonTheThird b) => a.Name != b.Name && a.Surname != b.Surname && a.Birthday != b.Birthday;
   }
 }
-*/
