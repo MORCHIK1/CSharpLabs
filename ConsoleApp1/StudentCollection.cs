@@ -88,9 +88,9 @@ namespace ConsoleApp1
         return (List<StudentTheThird>)ListOfStudents.Where(Student => Student.FormOfEducation == Education.Master);
       }
     }
-    public List<StudentTheThird> AverageMarkGroup(double value) //Have to return dict not list
+    public List<StudentTheThird> AverageMarkGroup(double value)
     {
-      return ListOfStudents.GroupBy(Student.Average == value).ToList(); 
+      return ListOfStudents.Where(student => student.Average == value).ToList();//return ListOfStudents.GroupBy(Student => Student.Average == value).ToList(); 
     }
   }
 }
