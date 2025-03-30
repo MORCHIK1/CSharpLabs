@@ -82,7 +82,7 @@ namespace ConsoleApp1
       return copied;
     }
 
-    public static bool operator ==(Person a, Person b) => a.Name == b.Name && a.Surname == b.Surname && a.Birthday == b.Birthday;
-    public static bool operator !=(Person a, Person b) => a.Name != b.Name && a.Surname != b.Surname && a.Birthday != b.Birthday;
+    public static bool operator ==(Person a, Person b) => a.Equals(b);
+    public static bool operator !=(Person a, Person b) => !a.Equals(b);
   }
 }
