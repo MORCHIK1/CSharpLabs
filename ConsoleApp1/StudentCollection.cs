@@ -59,7 +59,7 @@ namespace ConsoleApp1
     }
     public void SortByBirthdayDate()
     {
-      PersonTheThird ComparerPerson = new PersonTheThird();
+      IComparer<PersonTheThird> ComparerPerson = new PersonTheThird();
       ListOfStudents.Sort(comparer: ComparerPerson);
     }
     public void SortByAverage()
@@ -90,7 +90,7 @@ namespace ConsoleApp1
     }
     public List<StudentTheThird> AverageMarkGroup(double value)
     {
-      return ListOfStudents.Where(student => student.Average == value).ToList();//return ListOfStudents.GroupBy(Student => Student.Average == value).ToList(); 
+      return ListOfStudents.Where(student => student.Average == value).ToList();
     }
   }
 }

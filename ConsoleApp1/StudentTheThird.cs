@@ -35,11 +35,13 @@ namespace ConsoleApp1
       StudentPerson = studentPerson;
       FormOfEducation = formOfEducation;
       GroupNumber = groupNumber;
+      TestList = [];
+      ExamList = [];
     }
 
     public StudentTheThird() : this(studentPerson: new PersonTheThird(),
                             formOfEducation: new(),
-                            groupNumber: new(),
+                            groupNumber: 101,
                             testList: [],
                             examList: [])
     { }
@@ -54,7 +56,7 @@ namespace ConsoleApp1
       get { return _groupNumber; }
       init
       {
-        if (value <= 100 || value > 699)
+        if (value < 101 || value > 699)
         {
           throw new ArgumentOutOfRangeException(nameof(GroupNumber), "Invalid group number! Group number should be in (100; 699) range");
         }
@@ -94,24 +96,21 @@ namespace ConsoleApp1
         ExamList = newExamList;
         return;
       }
-
-      for (int i = 0; i < newExamList.Count; ++i)
-      {
-        ExamList.Add(newExamList[i]);
-      }
+      ExamList.AddRange(newExamList);
     }
 
     public override string ToString()
     {
       StringBuilder res = new StringBuilder(StudentPerson.ToString() + ' ' + FormOfEducation.ToString() + ' ' + GroupNumber.ToString() + ' ');
-      foreach (Exam item in ExamList)
+      for (int i = 0; i < ExamList.Count; i++)
       {
+        Exam item = ExamList[i];
         res.Append(item.ToString());
       }
 
       res.Append(' ');
 
-      foreach(Test item in TestList)
+      foreach (Test item in TestList)
       {
         res.Append(item.ToString());
       }
@@ -125,25 +124,25 @@ namespace ConsoleApp1
 
     public override object DeepCopy()
     {
-      List<Exam> CopiedExamList = [];
-      List<Test> CopiedTestList = [];
-      PersonTheThird CopiedStudentPerson = (PersonTheThird)StudentPerson.DeepCopy();
+      List<Exam> copiedExamList = [];
+      List<Test> copiedTestList = [];
+      PersonTheThird copiedStudentPerson = (PersonTheThird)StudentPerson.DeepCopy();
 
       foreach (Exam item in ExamList)
       {
-        CopiedExamList.Add((Exam)item.DeepCopy());
+        copiedExamList.Add((Exam)item.DeepCopy());
       }
 
       foreach (Test item in TestList)
       {
-        CopiedTestList.Add((Test)item.DeepCopy());
+        copiedTestList.Add((Test)item.DeepCopy());
       }
 
-      StudentTheThird copied = new StudentTheThird(CopiedStudentPerson,
+      StudentTheThird copied = new StudentTheThird(copiedStudentPerson,
                                        FormOfEducation,
                                        GroupNumber,
-                                       testList: CopiedTestList,
-                                       examList: CopiedExamList);
+                                       testList: copiedTestList,
+                                       examList: copiedExamList);
       return copied;
     }
     public IEnumerator GetEnumerator()
@@ -160,9 +159,9 @@ namespace ConsoleApp1
     {
       foreach (var item in ExamList)
       {
-        if (item is Exam && ((Exam)item).Grade > minScore)
+        if (item.Grade > minScore)
         {
-          yield return ((Exam)item);
+          yield return item;
         }
       }
     }
@@ -171,18 +170,19 @@ namespace ConsoleApp1
 }
 public class ExamAndTestEnum : IEnumerator
 {
-  public List<object> _students;
+  public List<object> list;
   int position = -1;
 
-  public ExamAndTestEnum(List<object> students)
+  public ExamAndTestEnum(List<object> collection)
   {
-    _students = students;
+    ArgumentNullException.ThrowIfNull(collection);
+    list = collection;
   }
 
   public bool MoveNext()
   {
     position++;
-    return (position < _students.Count);
+    return (position < list.Count);
   }
 
   public void Reset()
@@ -204,7 +204,7 @@ public class ExamAndTestEnum : IEnumerator
     {
       try
       {
-        return _students[position];
+        return list[position];
       }
       catch (IndexOutOfRangeException)
       {

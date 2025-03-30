@@ -20,58 +20,25 @@ namespace ConsoleApp1
   {
     public static void Main()
     {
-      PersonTheThird A = new PersonTheThird("Tester", "Texter", new DateTime(2004, 6, 1, 7, 47, 0));
-      PersonTheThird B = new PersonTheThird("Tester", "Texter", new DateTime(2004, 6, 1, 7, 47, 0));
-
-      if (A.Equals(B)) Console.WriteLine($"{A.GetHashCode()}, {B.GetHashCode()}");
-
-      Exam mathExam = new Exam("Math", 5, new DateTime());
-      Test test = new Test("History", true);
-
-      StudentTheThird GreatStudent = new StudentTheThird(A, Education.Master, 500, [test], [mathExam]);
+      StudentCollection studentCollection = new StudentCollection();
+      StudentTheThird andrii = new StudentTheThird(new PersonTheThird("Andrii", "A", new DateTime(2012,12,30)), Education.Master, 159);
+      StudentTheThird vasyl = new StudentTheThird(new PersonTheThird("Vasyl", "V", new DateTime(2008, 12, 30)), Education.Master, 159);
 
 
-      Exam programmingExam = new Exam("Programming", 2, new DateTime());
-      Exam algebraExam = new Exam("Algebra", 4, new DateTime());
-      Exam geometryExam = new Exam("Geometry", 5, new DateTime());
-      List<Exam> ExamsList = [mathExam, programmingExam, algebraExam, geometryExam];
-
-      GreatStudent.AddExams(ExamsList);
-
-      Console.WriteLine(GreatStudent);
-
-      Console.WriteLine(GreatStudent.StudentPerson);
-
-      StudentTheThird CheapCopy = (StudentTheThird)GreatStudent.DeepCopy();
-
-      List<Exam> ExamsForCopyTest = [programmingExam, programmingExam];
-
-      GreatStudent.AddExams(ExamsForCopyTest);
-
-      Console.WriteLine(GreatStudent);
-
-      Console.WriteLine(CheapCopy);
+      studentCollection.AddStudents([new StudentTheThird(), andrii, vasyl]);
 
 
-      foreach (var item in GreatStudent)
-      {
-        Console.WriteLine($"Foreach items: {item}");
-      }
+      Console.WriteLine(studentCollection.ToString());
 
-      foreach (Exam item in GreatStudent.GetExamsAboveScore(3))
-      {
-        Console.WriteLine(item);
-      }
+      studentCollection.SortByAverage();
 
-      try
-      {
-        StudentTheThird ErrorGroupStudent = new StudentTheThird(A, Education.Master, 700, [], []);
-      }
-      catch (Exception err)
-      {
-        Console.WriteLine($"{err.Message}");
-      }
+      Console.WriteLine(studentCollection.ToString());
 
+      studentCollection.SortByBirthdayDate();
+
+      Console.WriteLine(studentCollection.ToString());
+
+      studentCollection.SortBySurname();
     }
   }
 }
