@@ -1,4 +1,4 @@
-﻿using ConsoleApp1;
+using ConsoleApp1;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -130,11 +130,13 @@ namespace ConsoleApp1
 
       for (int i = 0; i < ExamList.Count; ++i)
       {
+        if (ExamList[i] is not Exam) continue;
         CopiedExamList.Add(((Exam)ExamList[i]).DeepCopy());
       }
 
       for (int i = 0; i < TestList.Count; ++i)
       {
+        if (TestList[i] is not Test) continue;
         CopiedTestList.Add(((Test)TestList[i]).DeepCopy());
       }
 
@@ -169,18 +171,19 @@ namespace ConsoleApp1
 }
 public class ExamAndTestEnum : IEnumerator
 {
-  public System.Collections.ArrayList _students;
+  private System.Collections.ArrayList list;
   int position = -1;
 
-  public ExamAndTestEnum(ArrayList students)
+  public ExamAndTestEnum(ArrayList collection)
   {
-    _students = students;
+    ArgumentNullException.ThrowIfNull(collection);
+    list = collection;
   }
 
   public bool MoveNext()
   {
     position++;
-    return (position < _students.Count);
+    return (position < list.Count);
   }
 
   public void Reset()
@@ -202,7 +205,7 @@ public class ExamAndTestEnum : IEnumerator
     {
       try
       {
-        return _students[position];
+        return list[position];
       }
       catch (IndexOutOfRangeException)
       {
