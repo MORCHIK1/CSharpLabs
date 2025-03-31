@@ -22,6 +22,9 @@ namespace ConsoleApp1
                List<Test> testList,
                List<Exam> examList)
     {
+      Name = studentPerson.Name;
+      Surname = studentPerson.Surname;
+      Date = studentPerson.Date;
       StudentPerson = studentPerson;
       FormOfEducation = formOfEducation;
       GroupNumber = groupNumber;
@@ -40,7 +43,7 @@ namespace ConsoleApp1
     }
 
     public StudentTheThird() : this(studentPerson: new PersonTheThird(),
-                            formOfEducation: new(),
+                            formOfEducation: Education.Master,
                             groupNumber: 101,
                             testList: [],
                             examList: [])
@@ -114,6 +117,9 @@ namespace ConsoleApp1
       {
         res.Append(item.ToString());
       }
+
+      res.Append($"\nTHIS AVERAGE ---- {Average}\n");
+
       return res.ToString();
     }
 

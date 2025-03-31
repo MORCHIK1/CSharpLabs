@@ -8,7 +8,7 @@ namespace ConsoleApp1
 {
   class StudentCollection
   {
-    List<StudentTheThird> _studentTheThird;
+    List<StudentTheThird> _listOfStudent;
       
     public void AddDefaults()
     {
@@ -29,11 +29,11 @@ namespace ConsoleApp1
 
     public List<StudentTheThird> ListOfStudents
     {
-      get { return _studentTheThird; }
-      set { _studentTheThird = value; }
+      get { return _listOfStudent; }
+      set { _listOfStudent = value; }
     }
 
-    public virtual string ToString()
+    public override sealed string ToString()
     {
       StringBuilder res = new StringBuilder();
       foreach (StudentTheThird item in ListOfStudents)
@@ -55,7 +55,7 @@ namespace ConsoleApp1
 
     public void SortBySurname()
     {
-      ListOfStudents.Sort((s1, s2) => s1.StudentPerson.CompareTo(s2.StudentPerson));
+      ListOfStudents.Sort((s1, s2) => (s1.StudentPerson).CompareTo(s2.StudentPerson));
     }
     public void SortByBirthdayDate()
     {
@@ -85,7 +85,10 @@ namespace ConsoleApp1
     {
       get
       {
-        return (List<StudentTheThird>)ListOfStudents.Where(Student => Student.FormOfEducation == Education.Master);
+        if (ListOfStudents is null)
+          return new List<StudentTheThird>();
+
+        return ListOfStudents.Where(Student => Student.FormOfEducation == Education.Master).ToList();
       }
     }
     public List<StudentTheThird> AverageMarkGroup(double value)

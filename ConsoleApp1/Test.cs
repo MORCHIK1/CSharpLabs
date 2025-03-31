@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http.Headers;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,7 +13,7 @@ namespace ConsoleApp1
   {
     public string TestSubjectName { get; set; }
     public bool TestPassed { get; set; }
-    public DateTime Date { get => new DateTime(); init => Date = value; }
+    public DateOnly Date { get => new DateOnly(); init => Date = value; }
 
     public Test(string testSubjectName,
                 bool testPassed)

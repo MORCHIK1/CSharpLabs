@@ -11,12 +11,12 @@ namespace ConsoleApp1
   {
     public string SubjectName { get; set; }
     public int Grade { get; set; }
-    public DateTime ExamDate { get; set; }
-    public DateTime Date { get => ExamDate; init => ExamDate = value; }
+    public DateOnly ExamDate { get; set; }
+    public DateOnly Date { get => ExamDate; init => ExamDate = value; }
 
     public Exam(string subjectName,
                 int grade,
-                DateTime examDate)
+                DateOnly examDate)
     {
       SubjectName = subjectName;
       Grade = grade;
@@ -25,7 +25,7 @@ namespace ConsoleApp1
 
     public Exam() : this(subjectName: "Exam",
                          grade: 0,
-                         examDate: new DateTime())
+                         examDate: new DateOnly())
     { }
 
     public override string ToString()

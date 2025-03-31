@@ -11,11 +11,11 @@ namespace ConsoleApp1
   {
     private string _name = default!;
     private string _surname = default!;
-    private System.DateTime _birthday = default!;
-    public DateTime Date { get => _birthday; init => _birthday = value; }
+    private System.DateOnly _birthday = default!;
+    public DateOnly Date { get => _birthday; init => _birthday = value; }
     public PersonTheThird(string name,
                   string surname,
-                  System.DateTime birthday)
+                  System.DateOnly birthday)
     {
       Name = name;
       Surname = surname;
@@ -24,7 +24,7 @@ namespace ConsoleApp1
 
     public PersonTheThird() : this(name: "Default Name",
                            surname: "Default Surname",
-                           birthday: new DateTime())
+                           birthday: new DateOnly())
     { }
 
 
@@ -38,7 +38,7 @@ namespace ConsoleApp1
       get { return _surname; }
       init { _surname = value; }
     }
-    public System.DateTime Birthday
+    public System.DateOnly Birthday
     {
       get { return _birthday; }
       init { _birthday = value; }
@@ -51,7 +51,7 @@ namespace ConsoleApp1
 
     public void SetYearBirthday(int Year)
     {
-      _birthday = new DateTime(Year, _birthday.Month, _birthday.Day);
+      _birthday = new DateOnly(Year, _birthday.Month, _birthday.Day);
     }
 
     public override string ToString()
@@ -84,19 +84,24 @@ namespace ConsoleApp1
 
     public int CompareTo(object? obj)
     {
-      if(obj is string)
+      if(this is not null || obj is not null)
       {
-        return _surname.CompareTo(obj);
+        if (obj is PersonTheThird)
+        {
+          return Surname.CompareTo((obj as PersonTheThird).Surname);
+        }
+        throw new ArgumentException("Object is not a Person");
       }
-      throw new ArgumentException("Object is not a Person");
+      throw new ArgumentNullException("One of the objects is null");
     }
     int IComparer<PersonTheThird>.Compare(PersonTheThird? x, PersonTheThird? y)
     {
       if(x is null || y is null) throw new NullReferenceException("One of the Persons is null");
+
       return x.Date.CompareTo(y.Date);
     }
 
-    public static bool operator ==(PersonTheThird a, PersonTheThird b) => a.Name == b.Name && a.Surname == b.Surname && a.Birthday == b.Birthday;
-    public static bool operator !=(PersonTheThird a, PersonTheThird b) => a.Name != b.Name && a.Surname != b.Surname && a.Birthday != b.Birthday;
+    public static bool operator ==(PersonTheThird a, PersonTheThird b) => a.Equals(b);
+    public static bool operator !=(PersonTheThird a, PersonTheThird b) => !(a.Equals(b));
   }
 }
