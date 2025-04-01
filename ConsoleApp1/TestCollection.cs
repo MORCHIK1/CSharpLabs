@@ -9,28 +9,23 @@ namespace ConsoleApp1
 {
   class TestCollection
   {
-    System.Collections.Generic.List<PersonTheThird> _listOfPerson;
-    System.Collections.Generic.List<string> _listOfString;
-    System.Collections.Generic.Dictionary<PersonTheThird, StudentTheThird> _dictKeyPersonValStudent;
-    System.Collections.Generic.Dictionary<string, StudentTheThird> _dictKeyStringValStudent;
+    System.Collections.Generic.List<PersonTheThird> listOfPerson;
+    System.Collections.Generic.List<string> listOfString;
+    System.Collections.Generic.Dictionary<PersonTheThird, StudentTheThird> dictKeyPersonValStudent;
+    System.Collections.Generic.Dictionary<string, StudentTheThird> dictKeyStringValStudent;
 
     public static StudentTheThird Create(int index)
     {
-      // Створюємо унікальну PersonTheThird для властивості StudentPerson
       var personInfo = new PersonTheThird(
           name: $"FName {index}",
           surname: $"LName {index}",
-          // Генеруємо дату народження, наприклад, 20 років тому +/- index днів
           birthday: DateOnly.MinValue.AddYears(20).AddDays(index)
       );
 
-      // Генеруємо номер групи в допустимому діапазоні [101, 699]
       int groupNumber = 101 + (index % 599); // 101 + (0..598) = 101..699
 
-      // Вибираємо форму навчання циклічно
       Education eduForm = (Education)(index % Enum.GetValues(typeof(Education)).Length);
 
-      // Створюємо порожні списки для тестів та екзаменів (можна додати генерацію)
       var tests = new List<Test>();
       var exams = new List<Exam>();
 
@@ -40,9 +35,6 @@ namespace ConsoleApp1
      
       tests.Add(new Test { TestSubjectName = "History", TestPassed = (index % 2 == 0) });
 
-
-
-      // Створюємо та повертаємо об'єкт StudentTheThird
       return new StudentTheThird(
           studentPerson: personInfo,
           formOfEducation: eduForm,
@@ -56,39 +48,39 @@ namespace ConsoleApp1
     {
       if (numOfElements < 0) throw new ArgumentOutOfRangeException(nameof(numOfElements));
 
-      _listOfPerson = new List<PersonTheThird>(numOfElements);
-      _listOfString = new List<string>(numOfElements);
-      _dictKeyPersonValStudent = new Dictionary<PersonTheThird, StudentTheThird>(numOfElements);
-      _dictKeyStringValStudent = new Dictionary<string, StudentTheThird>(numOfElements);
+      listOfPerson = new List<PersonTheThird>(numOfElements);
+      listOfString = new List<string>(numOfElements);
+      dictKeyPersonValStudent = new Dictionary<PersonTheThird, StudentTheThird>(numOfElements);
+      dictKeyStringValStudent = new Dictionary<string, StudentTheThird>(numOfElements);
 
       for (int i = 0; i < numOfElements; ++i)
       {
         StudentTheThird student = Create(i);
 
-        _listOfPerson.Add(student.StudentPerson);
-        _listOfString.Add($"Value String {i}");
-        _dictKeyPersonValStudent.Add(student.StudentPerson, student);
-        _dictKeyStringValStudent.Add($"KeyString_{i}", student);
+        listOfPerson.Add(student.StudentPerson);
+        listOfString.Add($"Value String {i}");
+        dictKeyPersonValStudent.Add(student.StudentPerson, student);
+        dictKeyStringValStudent.Add($"KeyString_{i}", student);
       }
     }
     public void FindListPerson(PersonTheThird findPerson)
     {
-      Console.WriteLine(_listOfPerson.Contains(findPerson) ? 1 : -1);
+      Console.WriteLine(listOfPerson.Contains(findPerson) ? 1 : -1);
       return;
     }
     public void FindListString(string findString)
     {
-      Console.WriteLine(_listOfString.Contains(findString) ? 1 : -1);
+      Console.WriteLine(listOfString.Contains(findString) ? 1 : -1);
       return;
     }
     public void FindDictPerson(PersonTheThird findKeyPerson)
     {
-      Console.WriteLine(_dictKeyPersonValStudent.ContainsKey(findKeyPerson) ? 1 : -1);
+      Console.WriteLine(dictKeyPersonValStudent.ContainsKey(findKeyPerson) ? 1 : -1);
       return;
     }
     public void FindDictString(StudentTheThird findValStudent)
     {
-      Console.WriteLine(_dictKeyStringValStudent.ContainsValue(findValStudent) ? 1 : -1);
+      Console.WriteLine(dictKeyStringValStudent.ContainsValue(findValStudent) ? 1 : -1);
       return;
     }
   }
