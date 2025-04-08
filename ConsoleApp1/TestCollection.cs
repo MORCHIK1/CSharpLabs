@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
@@ -13,6 +14,16 @@ namespace ConsoleApp1
     System.Collections.Generic.List<string> listOfString;
     System.Collections.Generic.Dictionary<PersonTheThird, StudentTheThird> dictKeyPersonValStudent;
     System.Collections.Generic.Dictionary<string, StudentTheThird> dictKeyStringValStudent;
+
+    private ImmutableList<PersonTheThird> immutListPerson;
+    private ImmutableList<string> immutListString;
+    private ImmutableDictionary<PersonTheThird, StudentTheThird> immutDictPerson;
+    private ImmutableDictionary<string, StudentTheThird> immutDictString;
+
+    private SortedList<PersonTheThird, PersonTheThird> sortListPerson;
+    private SortedList<string, string> sortListString;
+    private SortedDictionary<PersonTheThird, StudentTheThird> sortDictPerson;
+    private SortedDictionary<string, StudentTheThird> sortDictString;
 
     public static StudentTheThird Create(int index)
     {
