@@ -20,8 +20,8 @@ namespace ConsoleApp1
     private ImmutableDictionary<PersonTheThird, StudentTheThird> immutDictPerson;
     private ImmutableDictionary<string, StudentTheThird> immutDictString;
 
-    private SortedList<PersonTheThird, PersonTheThird> sortListPerson;
-    private SortedList<string, string> sortListString;
+    private SortedList<PersonTheThird, StudentTheThird> sortListPerson;
+    private SortedList<string, StudentTheThird> sortListString;
     private SortedDictionary<PersonTheThird, StudentTheThird> sortDictPerson;
     private SortedDictionary<string, StudentTheThird> sortDictString;
 
@@ -43,7 +43,7 @@ namespace ConsoleApp1
 
       exams.Add(new Exam { SubjectName = "Math", Grade = 60 + (index % 41), Date = DateOnly.MinValue.AddDays(10 + index % 5) });
       exams.Add(new Exam { SubjectName = "Physics", Grade = 55 + (index % 46), Date = DateOnly.MinValue.AddDays(5 + index % 3) });
-     
+
       tests.Add(new Test { TestSubjectName = "History", TestPassed = (index % 2 == 0) });
 
       return new StudentTheThird(
@@ -64,6 +64,11 @@ namespace ConsoleApp1
       dictKeyPersonValStudent = new Dictionary<PersonTheThird, StudentTheThird>(numOfElements);
       dictKeyStringValStudent = new Dictionary<string, StudentTheThird>(numOfElements);
 
+      sortListPerson = new SortedList<PersonTheThird, StudentTheThird>(numOfElements);
+      sortListString = new SortedList<string, StudentTheThird>(numOfElements);
+      sortDictPerson = new SortedDictionary<PersonTheThird, StudentTheThird>();
+      sortDictString = new SortedDictionary<string, StudentTheThird>();
+
       for (int i = 0; i < numOfElements; ++i)
       {
         StudentTheThird student = Create(i);
@@ -72,7 +77,17 @@ namespace ConsoleApp1
         listOfString.Add($"Value String {i}");
         dictKeyPersonValStudent.Add(student.StudentPerson, student);
         dictKeyStringValStudent.Add($"KeyString_{i}", student);
+
+        sortDictPerson.Add(student.StudentPerson, student);
+        sortDictString.Add($"KeyString_{i}", student);
+        sortListPerson.Add(student.StudentPerson, student);
+        sortListString.Add($"Value String {i}", student);
       }
+
+      immutListPerson = listOfPerson.ToImmutableList();
+      immutListString = listOfString.ToImmutableList();
+      immutDictString = dictKeyStringValStudent.ToImmutableDictionary();
+      immutDictPerson = dictKeyPersonValStudent.ToImmutableDictionary();
     }
     public void FindListPerson(PersonTheThird findPerson)
     {
@@ -92,6 +107,46 @@ namespace ConsoleApp1
     public void FindDictString(StudentTheThird findValStudent)
     {
       Console.WriteLine(dictKeyStringValStudent.ContainsValue(findValStudent) ? 1 : -1);
+      return;
+    }
+    public void FindImmutListPerson(PersonTheThird findPerson)
+    {
+      Console.WriteLine(immutListPerson.Contains(findPerson) ? 1 : -1);
+      return;
+    }
+    public void FindImmutListString(string findString)
+    {
+      Console.WriteLine(immutListString.Contains(findString) ? 1 : -1);
+      return;
+    }
+    public void FindImmutDictPerson(PersonTheThird findKeyPerson)
+    {
+      Console.WriteLine(immutDictPerson.ContainsKey(findKeyPerson) ? 1 : -1);
+      return;
+    }
+    public void FindImmutDictString(StudentTheThird findValStudent)
+    {
+      Console.WriteLine(immutDictString.ContainsValue(findValStudent) ? 1 : -1);
+      return;
+    }
+    public void FindSortListPerson(PersonTheThird findPerson)
+    {
+      Console.WriteLine(sortListPerson.ContainsKey(findPerson) ? 1 : -1);
+      return;
+    }
+    public void FindSortListString(string findString)
+    {
+      Console.WriteLine(sortListString.ContainsKey(findString) ? 1 : -1);
+      return;
+    }
+    public void FindSortDictPerson(PersonTheThird findKeyPerson)
+    {
+      Console.WriteLine(sortDictPerson.ContainsKey(findKeyPerson) ? 1 : -1);
+      return;
+    }
+    public void FindSortDictString(StudentTheThird findValStudent)
+    {
+      Console.WriteLine(sortDictString.ContainsValue(findValStudent) ? 1 : -1);
       return;
     }
   }

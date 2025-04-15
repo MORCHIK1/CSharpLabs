@@ -42,7 +42,7 @@ namespace ConsoleApp1
 
       Console.WriteLine(studentCollection.MaxAverage);
 
-      foreach(var item in studentCollection.MastersStudents)
+      foreach (var item in studentCollection.MastersStudents)
       {
         Console.WriteLine(item);
       }
@@ -52,18 +52,18 @@ namespace ConsoleApp1
         Console.WriteLine(item);
       }
 
-      int studentsInCollection = 500000;
+      int studentsInCollection = 100000; //------------------------ Number of students
 
       System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
 
       StudentTheThird firstStud = TestCollection.Create(1);
-      StudentTheThird halfStud = TestCollection.Create(studentsInCollection/2);
+      StudentTheThird halfStud = TestCollection.Create(studentsInCollection / 2);
       StudentTheThird lastStud = TestCollection.Create(studentsInCollection - 1);
       StudentTheThird theForgottenStud = new StudentTheThird();
 
       TestCollection testCollection = new TestCollection(studentsInCollection);
 
-      // ------------------------- List Person Search
+      // ------------------------------------------------------------------------ List Person Search
 
       watch.Start();
       testCollection.FindListPerson(firstStud);
@@ -155,6 +155,182 @@ namespace ConsoleApp1
       watch.Stop();
       Console.WriteLine("Словник String неiснуючий елемент - " + watch.Elapsed + "\n");
 
+
+      // --------------------------------------------------------------------- List Immutable Person Search
+
+      watch.Start();
+      testCollection.FindImmutListPerson(firstStud);
+      watch.Stop();
+      Console.WriteLine("Список Immutable Person перший елемент - " + watch.Elapsed);
+
+      watch.Restart();
+      testCollection.FindImmutListPerson(halfStud);
+      watch.Stop();
+      Console.WriteLine("Список Immutable Person центральний елемент - " + watch.Elapsed);
+
+      watch.Restart();
+      testCollection.FindImmutListPerson(lastStud);
+      watch.Stop();
+      Console.WriteLine("Список Immutable Person останнiй елемент - " + watch.Elapsed);
+
+      watch.Restart();
+      testCollection.FindImmutListPerson(theForgottenStud);
+      watch.Stop();
+      Console.WriteLine("Список Immutable Person неiснуючий елемент - " + watch.Elapsed + "\n");
+
+      // ------------------------- Dict Immutable Person Search
+
+      watch.Restart();
+      testCollection.FindImmutDictPerson(firstStud.StudentPerson);
+      watch.Stop();
+      Console.WriteLine("Словник Immutable Person перший елемент - " + watch.Elapsed);
+
+      watch.Restart();
+      testCollection.FindImmutDictPerson(halfStud.StudentPerson);
+      watch.Stop();
+      Console.WriteLine("Словник Immutable Person центральний елемент - " + watch.Elapsed);
+
+      watch.Restart();
+      testCollection.FindImmutDictPerson(lastStud.StudentPerson);
+      watch.Stop();
+      Console.WriteLine("Словник Immutable Person останнiй елемент - " + watch.Elapsed);
+
+      watch.Restart();
+      testCollection.FindImmutDictPerson(theForgottenStud.StudentPerson);
+      watch.Stop();
+      Console.WriteLine("Словник Immutable Person неiснуючий елемент - " + watch.Elapsed + "\n");
+
+      // ------------------------- List Immutable string Search
+
+      watch.Restart();
+      testCollection.FindImmutListString("Value String " + firstStudstr);
+      watch.Stop();
+      Console.WriteLine("Список Immutable String перший елемент - " + watch.Elapsed);
+
+      watch.Restart();
+      testCollection.FindImmutListString("Value String " + halfStudstr);
+      watch.Stop();
+      Console.WriteLine("Список Immutable String центральний елемент - " + watch.Elapsed);
+
+      watch.Restart();
+      testCollection.FindImmutListString("Value String " + lastStudstr);
+      watch.Stop();
+      Console.WriteLine("Список Immutable String останнiй елемент - " + watch.Elapsed);
+
+      watch.Restart();
+      testCollection.FindImmutListString("Value String " + theForgottenStudstr);
+      watch.Stop();
+      Console.WriteLine("Список Immutable String неiснуючий елемент - " + watch.Elapsed + "\n");
+
+      // ------------------------- Dict Immutable String Search
+
+      watch.Restart();
+      testCollection.FindImmutDictString(TestCollection.Create(0));
+      watch.Stop();
+      Console.WriteLine("Словник Immutable String перший елемент - " + watch.Elapsed);
+
+      watch.Restart();
+      testCollection.FindImmutDictString(TestCollection.Create(studentsInCollection / 2));
+      watch.Stop();
+      Console.WriteLine("Словник Immutable String центральний елемент - " + watch.Elapsed);
+
+      watch.Restart();
+      testCollection.FindImmutDictString(TestCollection.Create(studentsInCollection - 1));
+      watch.Stop();
+      Console.WriteLine("Словник Immutable String останнiй елемент - " + watch.Elapsed);
+
+      watch.Restart();
+      testCollection.FindImmutDictString(new StudentTheThird());
+      watch.Stop();
+      Console.WriteLine("Словник Immutable String неiснуючий елемент - " + watch.Elapsed + "\n");
+
+      // ------------------------------------------------------------- List Sorted Person Search
+
+      watch.Start();
+      testCollection.FindSortListPerson(firstStud);
+      watch.Stop();
+      Console.WriteLine("Список Sorted Person перший елемент - " + watch.Elapsed);
+
+      watch.Restart();
+      testCollection.FindSortListPerson(halfStud);
+      watch.Stop();
+      Console.WriteLine("Список Sorted Person центральний елемент - " + watch.Elapsed);
+
+      watch.Restart();
+      testCollection.FindSortListPerson(lastStud);
+      watch.Stop();
+      Console.WriteLine("Список Sorted Person останнiй елемент - " + watch.Elapsed);
+
+      watch.Restart();
+      testCollection.FindSortListPerson(theForgottenStud);
+      watch.Stop();
+      Console.WriteLine("Список Sorted Person неiснуючий елемент - " + watch.Elapsed + "\n");
+
+      // ------------------------- Dict Sorted Person Search
+
+      watch.Restart();
+      testCollection.FindSortDictPerson(firstStud.StudentPerson);
+      watch.Stop();
+      Console.WriteLine("Словник Sorted Person перший елемент - " + watch.Elapsed);
+
+      watch.Restart();
+      testCollection.FindSortDictPerson(halfStud.StudentPerson);
+      watch.Stop();
+      Console.WriteLine("Словник Sorted Person центральний елемент - " + watch.Elapsed);
+
+      watch.Restart();
+      testCollection.FindSortDictPerson(lastStud.StudentPerson);
+      watch.Stop();
+      Console.WriteLine("Словник Sorted Person останнiй елемент - " + watch.Elapsed);
+
+      watch.Restart();
+      testCollection.FindSortDictPerson(theForgottenStud.StudentPerson);
+      watch.Stop();
+      Console.WriteLine("Словник Sorted Person неiснуючий елемент - " + watch.Elapsed + "\n");
+
+      // ------------------------- List Sorted string Search
+
+      watch.Restart();
+      testCollection.FindSortListString("Value String " + firstStudstr);
+      watch.Stop();
+      Console.WriteLine("Список Sorted String перший елемент - " + watch.Elapsed);
+
+      watch.Restart();
+      testCollection.FindSortListString("Value String " + halfStudstr);
+      watch.Stop();
+      Console.WriteLine("Список Sorted String центральний елемент - " + watch.Elapsed);
+
+      watch.Restart();
+      testCollection.FindSortListString("Value String " + lastStudstr);
+      watch.Stop();
+      Console.WriteLine("Список Sorted String останнiй елемент - " + watch.Elapsed);
+
+      watch.Restart();
+      testCollection.FindSortListString("Value String " + theForgottenStudstr);
+      watch.Stop();
+      Console.WriteLine("Список Sorted String неiснуючий елемент - " + watch.Elapsed + "\n");
+
+      // ------------------------- Dict Sorted String Search
+
+      watch.Restart();
+      testCollection.FindSortDictString(TestCollection.Create(0));
+      watch.Stop();
+      Console.WriteLine("Словник Sorted String перший елемент - " + watch.Elapsed);
+
+      watch.Restart();
+      testCollection.FindSortDictString(TestCollection.Create(studentsInCollection / 2));
+      watch.Stop();
+      Console.WriteLine("Словник Sorted String центральний елемент - " + watch.Elapsed);
+
+      watch.Restart();
+      testCollection.FindSortDictString(TestCollection.Create(studentsInCollection - 1));
+      watch.Stop();
+      Console.WriteLine("Словник Sorted String останнiй елемент - " + watch.Elapsed);
+
+      watch.Restart();
+      testCollection.FindSortDictString(new StudentTheThird());
+      watch.Stop();
+      Console.WriteLine("Словник Sorted String неiснуючий елемент - " + watch.Elapsed + "\n");
     }
   }
 }
