@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace ConsoleApp1
 {
-  class StudentCollection
+  class StudentCollectionTheFifth
   {
+    private string CollectionName { get; set; }
     List<StudentTheThird> _listOfStudent;
-      
+
     public void AddDefaults()
     {
       ListOfStudents.Add(new StudentTheThird());
@@ -19,7 +20,7 @@ namespace ConsoleApp1
     public void AddStudents(params StudentTheThird[] NewStudents)
     {
       if (NewStudents is null) return;
-      if(ListOfStudents is null)
+      if (ListOfStudents is null)
       {
         ListOfStudents = [.. NewStudents];
         return;
@@ -94,6 +95,52 @@ namespace ConsoleApp1
     public List<StudentTheThird> AverageMarkGroup(double value)
     {
       return ListOfStudents.Where(student => student.Average == value).ToList();
+    }
+
+    void StudentListHandler(object source, StudentListEventHandler args) { }
+
+    public bool Remove(int j)
+    {
+      StudentCountChanged;
+      if (ListOfStudents.Count < j)
+      {
+        ListOfStudents.RemoveAt(j);
+        return true;
+      }
+
+      return false;
+    }
+
+    public StudentTheThird this[int index]
+    {
+      get
+      {
+        if (ListOfStudents == null)
+        {
+          throw new InvalidOperationException("The student list has not been initialized.");
+        }
+        if (index < 0 || index >= ListOfStudents.Count)
+        {
+          throw new IndexOutOfRangeException($"Index {index} is out of range for the student list");
+        }
+        return ListOfStudents[index];
+      }
+      init
+      {
+        if (_listOfStudent == null)
+        {
+          throw new InvalidOperationException("Cannot initialize via indexer: the student list is null.");
+        }
+        if (index < 0 || index >= _listOfStudent.Count)
+        {
+          throw new IndexOutOfRangeException($"Cannot initialize at index {index}: index is out of range (0 to {_listOfStudent.Count - 1}).");
+        }
+        _listOfStudent[index] = value;
+      }
+    }
+
+    public Action<StudentListEventHandler> StudentCountChanged(StudentListEventHandler args) { 
+    
     }
   }
 }
