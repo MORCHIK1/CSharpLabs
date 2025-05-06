@@ -11,6 +11,12 @@ namespace ConsoleApp1
     private string CollectionName { get; set; }
     List<StudentTheThird> _listOfStudent;
 
+    public StudentCollectionTheFifth(string collectionName)
+    {
+      CollectionName = collectionName;
+      ListOfStudents = new List<StudentTheThird>();
+    }
+
     public void AddDefaults()
     {
       ListOfStudents.Add(new StudentTheThird());
@@ -97,17 +103,28 @@ namespace ConsoleApp1
       return ListOfStudents.Where(student => student.Average == value).ToList();
     }
 
-    void StudentListHandler(object source, StudentListEventHandler args) { }
+    public event StudentListHandler? StudentCountChanged;
+    public event StudentListHandler? StudentReferenceChanged;
+
+    private void OnStudentCountChanged(string typeOfChange, StudentTheThird student)
+    {
+      StudentCountChanged?.Invoke(this, new StudentListEventHandler(CollectionName, typeOfChange, student));
+    }
+
+    private void OnStudentReferenceChanged(StudentTheThird newStudent)
+    {
+      StudentReferenceChanged?.Invoke(this, new StudentListEventHandler(CollectionName, "Reference Change (Indexer Init)", newStudent));
+    }
 
     public bool Remove(int j)
     {
-      StudentCountChanged;
-      if (ListOfStudents.Count < j)
+      if (j >= 0 && j < ListOfStudents.Count)
       {
+        StudentTheThird removedStudent = ListOfStudents[j];
         ListOfStudents.RemoveAt(j);
+        OnStudentCountChanged("Remove", removedStudent);
         return true;
       }
-
       return false;
     }
 
@@ -125,7 +142,7 @@ namespace ConsoleApp1
         }
         return ListOfStudents[index];
       }
-      init
+      set
       {
         if (_listOfStudent == null)
         {
@@ -136,11 +153,8 @@ namespace ConsoleApp1
           throw new IndexOutOfRangeException($"Cannot initialize at index {index}: index is out of range (0 to {_listOfStudent.Count - 1}).");
         }
         _listOfStudent[index] = value;
+        OnStudentReferenceChanged(value);
       }
-    }
-
-    public Action<StudentListEventHandler> StudentCountChanged(StudentListEventHandler args) { 
-    
     }
   }
 }

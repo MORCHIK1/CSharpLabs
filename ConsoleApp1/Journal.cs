@@ -10,6 +10,10 @@ namespace ConsoleApp1
   {
     private List<JournalEntry> entries;
 
+    public Journal() {
+      entries = new List<JournalEntry>();
+    }
+
     public override string ToString()
     {
       StringBuilder res = new StringBuilder();
@@ -19,6 +23,16 @@ namespace ConsoleApp1
         res.Append(entry.ToString());
       }
       return res.ToString();
+    }
+
+    public void StudentCountChangedHandler(object source, StudentListEventHandler args)
+    {
+      entries.Add(new JournalEntry(args.CollectionName, args.TypeOfChanges, args.RelatedChanges));
+    }
+
+    public void StudentReferenceChangedHandler(object source, StudentListEventHandler args)
+    {
+      entries.Add(new JournalEntry(args.CollectionName, args.TypeOfChanges, args.RelatedChanges));
     }
   }
 }

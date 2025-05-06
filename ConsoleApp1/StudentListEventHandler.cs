@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleApp1
 {
-  internal class StudentListEventHandler : System.EventArgs
+  class StudentListEventHandler : System.EventArgs
   {
     public string CollectionName { get; set; }
     public string TypeOfChanges{ get; set; }
