@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 namespace ConsoleApp1
 {
   delegate void StudentListHandler(object source, StudentListEventHandler args);
-interface IDateAndCopy
+  interface IDateAndCopy
   {
     object DeepCopy();
     System.DateOnly Date { get; init; }
@@ -52,10 +52,11 @@ interface IDateAndCopy
       );
 
       Console.WriteLine("\n>>> Removing student at index 1 from Collection 1...");
-      collection1.Remove(1);
+      bool removed = collection1.Remove(1);
+      Console.WriteLine($"Removal successful: {removed}");
 
       Console.WriteLine("\n>>> Removing non-existent student (index 10) from Collection 1...");
-      bool removed = collection1.Remove(10); 
+      removed = collection1.Remove(10);
       Console.WriteLine($"Removal successful: {removed}");
 
 
@@ -69,7 +70,7 @@ interface IDateAndCopy
       }
       catch (IndexOutOfRangeException e)
       {
-        Console.WriteLine($"Caught expected exception: {e.Message}"); 
+        Console.WriteLine($"Caught expected exception: {e.Message}");
         collection1.AddStudents(new StudentTheThird(new PersonTheThird("Temporary", "Student", DateOnly.MinValue), Education.SecondEducation, 500));
         Console.WriteLine("\n>>> Assigning again via indexer [1] after adding student...");
         collection1[1] = new StudentTheThird(new PersonTheThird("Diana", "Prince", new DateOnly(1999, 9, 9)), Education.Bachelor, 102);
@@ -81,7 +82,8 @@ interface IDateAndCopy
       collection2.AddDefaults();
 
       Console.WriteLine("\n>>> Removing student at index 0 from Collection 2...");
-      collection2.Remove(0);
+      removed = collection2.Remove(0);
+      Console.WriteLine($"Removal successful: {removed}");
 
 
       Console.WriteLine("\n--- Displaying Journals ---");
@@ -97,10 +99,6 @@ interface IDateAndCopy
       Console.WriteLine("\n--- Displaying Final Collections ---");
       Console.WriteLine(collection1.ToString());
       Console.WriteLine(collection2.ToString());
-
-
-      Console.WriteLine("\nPress Enter to exit.");
-      Console.ReadLine();
     }
   }
 }
