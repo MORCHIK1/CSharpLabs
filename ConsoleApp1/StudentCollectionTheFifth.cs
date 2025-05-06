@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,12 +20,18 @@ namespace ConsoleApp1
     public void AddDefaults()
     {
       ListOfStudents.Add(new StudentTheThird());
-      ListOfStudents.Add(new StudentTheThird());
+      OnStudentCountChanged("Added Default", new StudentTheThird());
     }
 
     public void AddStudents(params StudentTheThird[] NewStudents)
     {
       if (NewStudents is null) return;
+
+      foreach (var student in NewStudents)
+      {
+        OnStudentCountChanged("Added Student", student);
+      }
+
       if (ListOfStudents is null)
       {
         ListOfStudents = [.. NewStudents];
@@ -122,7 +128,7 @@ namespace ConsoleApp1
       {
         StudentTheThird removedStudent = ListOfStudents[j];
         ListOfStudents.RemoveAt(j);
-        OnStudentCountChanged("Remove", removedStudent);
+        OnStudentCountChanged("Remove Student", removedStudent);
         return true;
       }
       return false;
