@@ -1,14 +1,15 @@
-﻿using ConsoleApp1;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Xml.Linq;
 
 namespace ConsoleApp1
 {
-  class StudentTheThird : PersonTheThird, IDateAndCopy, IEnumerable
+  internal class StudentTheSixth : PersonTheThird, IDateAndCopy, IEnumerable
   {
     public PersonTheThird StudentPerson { get; init; } = new PersonTheThird();
     private Education _formOfEducation;
@@ -16,9 +17,9 @@ namespace ConsoleApp1
     private List<Test> _testList;
     private List<Exam> _examList;
 
-    public StudentTheThird(PersonTheThird studentPerson,
+    public StudentTheSixth(PersonTheThird studentPerson,
                Education formOfEducation,
-               int groupNumber,
+    int groupNumber,
                List<Test> testList,
                List<Exam> examList)
     {
@@ -31,7 +32,7 @@ namespace ConsoleApp1
       TestList = testList;
       ExamList = examList;
     }
-    public StudentTheThird(PersonTheThird studentPerson,
+    public StudentTheSixth(PersonTheThird studentPerson,
                     Education formOfEducation,
                     int groupNumber)
     {
@@ -42,7 +43,7 @@ namespace ConsoleApp1
       ExamList = [];
     }
 
-    public StudentTheThird() : this(studentPerson: new PersonTheThird(),
+    public StudentTheSixth() : this(studentPerson: new PersonTheThird(),
                             formOfEducation: Education.Master,
                             groupNumber: 101,
                             testList: [],
@@ -144,7 +145,7 @@ namespace ConsoleApp1
         copiedTestList.Add((Test)item.DeepCopy());
       }
 
-      StudentTheThird copied = new StudentTheThird(copiedStudentPerson,
+      StudentTheSixth copied = new StudentTheSixth(copiedStudentPerson,
                                        FormOfEducation,
                                        GroupNumber,
                                        testList: copiedTestList,
@@ -218,4 +219,6 @@ public class ExamAndTestEnum : IEnumerator
       }
     }
   }
+
+
 }
