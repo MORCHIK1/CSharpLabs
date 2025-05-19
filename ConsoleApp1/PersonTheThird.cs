@@ -33,17 +33,17 @@ namespace ConsoleApp1
     public string Name
     {
       get { return _name; }
-      init { _name = value; }
+      set { _name = value; }
     }
     public string Surname
     {
       get { return _surname; }
-      init { _surname = value; }
+      set { _surname = value; }
     }
     public System.DateOnly Birthday
     {
       get { return _birthday; }
-      init { _birthday = value; }
+      set { _birthday = value; }
     }
 
     public int GetYearBirthday

@@ -4,14 +4,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Xml.Linq;
+using System.IO; 
+using System.Text.Json;
+using System.Text.Json.Serialization; 
+using System.Globalization;
 
 namespace ConsoleApp1
 {
   internal class StudentTheSixth : PersonTheThird, IDateAndCopy, IEnumerable
   {
-    public PersonTheThird StudentPerson { get; init; } = new PersonTheThird();
+    public PersonTheThird StudentPerson { get; set; } = new PersonTheThird();
     private Education _formOfEducation;
     private int _groupNumber;
     private List<Test> _testList;
@@ -19,7 +21,7 @@ namespace ConsoleApp1
 
     public StudentTheSixth(PersonTheThird studentPerson,
                Education formOfEducation,
-    int groupNumber,
+               int groupNumber,
                List<Test> testList,
                List<Exam> examList)
     {
@@ -32,6 +34,8 @@ namespace ConsoleApp1
       TestList = testList;
       ExamList = examList;
     }
+
+    [JsonConstructor]
     public StudentTheSixth(PersonTheThird studentPerson,
                     Education formOfEducation,
                     int groupNumber)
@@ -53,12 +57,12 @@ namespace ConsoleApp1
     public Education FormOfEducation
     {
       get { return _formOfEducation; }
-      init { _formOfEducation = value; }
+      set { _formOfEducation = value; }
     }
     public int GroupNumber
     {
       get { return _groupNumber; }
-      init
+      set
       {
         if (value < 101 || value > 699)
         {
@@ -71,7 +75,7 @@ namespace ConsoleApp1
     public List<Test> TestList
     {
       get { return _testList; }
-      init { _testList = value; }
+      set { _testList = value; }
     }
     public List<Exam> ExamList
     {
@@ -129,29 +133,187 @@ namespace ConsoleApp1
       return StudentPerson.ToString() + ' ' + FormOfEducation.ToString() + ' ' + GroupNumber.ToString() + ' ' + Average.ToString() + ' ';
     }
 
+    private static JsonSerializerOptions GetJsonSerializerOptions()
+    {
+      return new JsonSerializerOptions
+      {
+        WriteIndented = true, 
+      };
+    }
+
     public override object DeepCopy()
     {
-      List<Exam> copiedExamList = [];
-      List<Test> copiedTestList = [];
-      PersonTheThird copiedStudentPerson = (PersonTheThird)StudentPerson.DeepCopy();
-
-      foreach (Exam item in ExamList)
-      {
-        copiedExamList.Add((Exam)item.DeepCopy());
-      }
-
-      foreach (Test item in TestList)
-      {
-        copiedTestList.Add((Test)item.DeepCopy());
-      }
-
-      StudentTheSixth copied = new StudentTheSixth(copiedStudentPerson,
-                                       FormOfEducation,
-                                       GroupNumber,
-                                       testList: copiedTestList,
-                                       examList: copiedExamList);
-      return copied;
+      JsonSerializerOptions options = GetJsonSerializerOptions();
+      string jsonString = JsonSerializer.Serialize(this, options);
+      return JsonSerializer.Deserialize<StudentTheSixth>(jsonString, options) ?? new StudentTheSixth();
     }
+
+    public bool Save(string filename)
+    {
+      try
+      {
+        JsonSerializerOptions options = GetJsonSerializerOptions();
+        string jsonString = JsonSerializer.Serialize(this, options);
+        File.WriteAllText(filename, jsonString);
+        return true;
+      }
+      catch (Exception ex)
+      {
+        Console.WriteLine($"Error saving to file '{filename}': {ex.Message}");
+        return false;
+      }
+    }
+
+    // Instance method Load using System.Text.Json
+    public bool Load(string filename)
+    {
+      StudentTheSixth? loadedStudent;
+      try
+      {
+        JsonSerializerOptions options = GetJsonSerializerOptions();
+        string jsonString = File.ReadAllText(filename);
+        loadedStudent = JsonSerializer.Deserialize<StudentTheSixth>(jsonString, options);
+
+        if (loadedStudent == null)
+        {
+          Console.WriteLine($"Error: Could not deserialize student data from '{filename}'.");
+          return false;
+        }
+      }
+      catch (Exception ex)
+      {
+        Console.WriteLine($"Error loading from file '{filename}': {ex.Message}");
+        return false;
+      }
+
+      Name = loadedStudent.Name;
+      Surname = loadedStudent.Surname;
+      Birthday = loadedStudent.Date; 
+
+      StudentPerson = (PersonTheThird)(loadedStudent.StudentPerson?.DeepCopy() ?? new PersonTheThird());
+      FormOfEducation = loadedStudent.FormOfEducation;
+
+      _groupNumber = loadedStudent.GroupNumber;
+
+      _testList = loadedStudent.TestList?.Select(t => (Test)t.DeepCopy()).ToList() ?? new List<Test>();
+      ExamList = loadedStudent.ExamList?.Select(e => (Exam)e.DeepCopy()).ToList() ?? new List<Exam>();
+
+      return true;
+    }
+
+    public bool AddFromConsole()
+    {
+      Console.WriteLine("Enter exam data: SubjectName,Grade,ExamDate (e.g., Math,5,2023-10-27)");
+      Console.WriteLine("Allowed delimiters: comma (,)");
+      string? input = Console.ReadLine();
+
+      if (string.IsNullOrWhiteSpace(input))
+      {
+        Console.WriteLine("Error: No input provided.");
+        return false;
+      }
+
+      try
+      {
+        string[] parts = input.Split(',');
+        if (parts.Length != 3)
+        {
+          Console.WriteLine("Error: Invalid input format. Expected 3 parts separated by comma.");
+          return false;
+        }
+
+        string subject = parts[0].Trim();
+        if (!int.TryParse(parts[1].Trim(), out int grade))
+        {
+          Console.WriteLine("Error: Invalid grade format. Grade must be an integer.");
+          return false;
+        }
+        if (!DateOnly.TryParse(parts[2].Trim(), out DateOnly examDate))
+        {
+          Console.WriteLine("Error: Invalid date format. Date must be in yyyy-MM-dd format.");
+          return false;
+        }
+
+        Exam newExam = new Exam(subject, grade, examDate);
+        if (ExamList == null)
+        {
+          ExamList = new List<Exam>();
+        }
+        ExamList.Add(newExam);
+        Console.WriteLine("Exam added successfully.");
+        return true;
+      }
+      catch (Exception ex)
+      {
+        Console.WriteLine($"Error processing input: {ex.Message}");
+        return false;
+      }
+    }
+
+
+    public static bool Save(string filename, StudentTheSixth student)
+    {
+      if (student == null)
+      {
+        Console.WriteLine("Error: Cannot save a null object.");
+        return false;
+      }
+      try
+      {
+        JsonSerializerOptions options = GetJsonSerializerOptions();
+        string jsonString = JsonSerializer.Serialize(student, options);
+        File.WriteAllText(filename, jsonString);
+        return true;
+      }
+      catch (Exception ex)
+      {
+        Console.WriteLine($"Error saving object to file '{filename}': {ex.Message}");
+        return false;
+      }
+    }
+
+    public static bool Load(string filename, StudentTheSixth student)
+    {
+      if (student == null)
+      {
+        Console.WriteLine("Error: Cannot load data into a null object reference.");
+        return false;
+      }
+
+      StudentTheSixth? loadedStudent;
+      try
+      {
+        JsonSerializerOptions options = GetJsonSerializerOptions();
+        string jsonString = File.ReadAllText(filename);
+        loadedStudent = JsonSerializer.Deserialize<StudentTheSixth>(jsonString, options);
+
+        if (loadedStudent == null)
+        {
+          Console.WriteLine($"Error: Could not deserialize student data from '{filename}'.");
+          return false;
+        }
+      }
+      catch (Exception ex)
+      {
+        Console.WriteLine($"Error loading object from file '{filename}': {ex.Message}");
+        return false;
+      }
+
+      student.Name = loadedStudent.Name;
+      student.Surname = loadedStudent.Surname;
+      student.Birthday = loadedStudent.Date;
+
+      student.StudentPerson = (PersonTheThird)(loadedStudent.StudentPerson?.DeepCopy() ?? new PersonTheThird());
+      student.FormOfEducation = loadedStudent.FormOfEducation;
+      student.GroupNumber = loadedStudent.GroupNumber;
+
+      student.TestList = loadedStudent.TestList?.Select(test => (Test)test.DeepCopy()).ToList() ?? new List<Test>();
+      student.ExamList = loadedStudent.ExamList?.Select(exam => (Exam)exam.DeepCopy()).ToList() ?? new List<Exam>();
+
+      return true;
+    }
+
+
     public IEnumerator GetEnumerator()
     {
       var ExamsAndTests = new List<object>(ExamList.Count +
