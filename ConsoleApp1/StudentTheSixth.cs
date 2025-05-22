@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.IO; 
+using System.IO;
 using System.Text.Json;
-using System.Text.Json.Serialization; 
+using System.Text.Json.Serialization;
 using System.Globalization;
 
 namespace ConsoleApp1
@@ -133,17 +133,13 @@ namespace ConsoleApp1
       return StudentPerson.ToString() + ' ' + FormOfEducation.ToString() + ' ' + GroupNumber.ToString() + ' ' + Average.ToString() + ' ';
     }
 
-    private static JsonSerializerOptions GetJsonSerializerOptions()
+    private static readonly JsonSerializerOptions options = new()
     {
-      return new JsonSerializerOptions
-      {
-        WriteIndented = true, 
-      };
-    }
+      WriteIndented = true
+    };
 
     public override object DeepCopy()
     {
-      JsonSerializerOptions options = GetJsonSerializerOptions();
       string jsonString = JsonSerializer.Serialize(this, options);
       return JsonSerializer.Deserialize<StudentTheSixth>(jsonString, options) ?? new StudentTheSixth();
     }
@@ -152,7 +148,6 @@ namespace ConsoleApp1
     {
       try
       {
-        JsonSerializerOptions options = GetJsonSerializerOptions();
         string jsonString = JsonSerializer.Serialize(this, options);
         File.WriteAllText(filename, jsonString);
         return true;
@@ -164,13 +159,11 @@ namespace ConsoleApp1
       }
     }
 
-    // Instance method Load using System.Text.Json
     public bool Load(string filename)
     {
       StudentTheSixth? loadedStudent;
       try
       {
-        JsonSerializerOptions options = GetJsonSerializerOptions();
         string jsonString = File.ReadAllText(filename);
         loadedStudent = JsonSerializer.Deserialize<StudentTheSixth>(jsonString, options);
 
@@ -188,15 +181,15 @@ namespace ConsoleApp1
 
       Name = loadedStudent.Name;
       Surname = loadedStudent.Surname;
-      Birthday = loadedStudent.Date; 
+      Birthday = loadedStudent.Birthday;
 
       StudentPerson = (PersonTheThird)(loadedStudent.StudentPerson?.DeepCopy() ?? new PersonTheThird());
       FormOfEducation = loadedStudent.FormOfEducation;
 
-      _groupNumber = loadedStudent.GroupNumber;
+      GroupNumber = loadedStudent.GroupNumber;
 
-      _testList = loadedStudent.TestList?.Select(t => (Test)t.DeepCopy()).ToList() ?? new List<Test>();
-      ExamList = loadedStudent.ExamList?.Select(e => (Exam)e.DeepCopy()).ToList() ?? new List<Exam>();
+      TestList = loadedStudent.TestList?.Select(test => (Test)test.DeepCopy()).ToList() ?? new List<Test>();
+      ExamList = loadedStudent.ExamList?.Select(exam => (Exam)exam.DeepCopy()).ToList() ?? new List<Exam>();
 
       return true;
     }
@@ -258,18 +251,8 @@ namespace ConsoleApp1
         Console.WriteLine("Error: Cannot save a null object.");
         return false;
       }
-      try
-      {
-        JsonSerializerOptions options = GetJsonSerializerOptions();
-        string jsonString = JsonSerializer.Serialize(student, options);
-        File.WriteAllText(filename, jsonString);
-        return true;
-      }
-      catch (Exception ex)
-      {
-        Console.WriteLine($"Error saving object to file '{filename}': {ex.Message}");
-        return false;
-      }
+
+      return student.Save(filename);
     }
 
     public static bool Load(string filename, StudentTheSixth student)
@@ -280,37 +263,9 @@ namespace ConsoleApp1
         return false;
       }
 
-      StudentTheSixth? loadedStudent;
-      try
-      {
-        JsonSerializerOptions options = GetJsonSerializerOptions();
-        string jsonString = File.ReadAllText(filename);
-        loadedStudent = JsonSerializer.Deserialize<StudentTheSixth>(jsonString, options);
+      StudentTheSixth? loadedStudent = new StudentTheSixth();
 
-        if (loadedStudent == null)
-        {
-          Console.WriteLine($"Error: Could not deserialize student data from '{filename}'.");
-          return false;
-        }
-      }
-      catch (Exception ex)
-      {
-        Console.WriteLine($"Error loading object from file '{filename}': {ex.Message}");
-        return false;
-      }
-
-      student.Name = loadedStudent.Name;
-      student.Surname = loadedStudent.Surname;
-      student.Birthday = loadedStudent.Date;
-
-      student.StudentPerson = (PersonTheThird)(loadedStudent.StudentPerson?.DeepCopy() ?? new PersonTheThird());
-      student.FormOfEducation = loadedStudent.FormOfEducation;
-      student.GroupNumber = loadedStudent.GroupNumber;
-
-      student.TestList = loadedStudent.TestList?.Select(test => (Test)test.DeepCopy()).ToList() ?? new List<Test>();
-      student.ExamList = loadedStudent.ExamList?.Select(exam => (Exam)exam.DeepCopy()).ToList() ?? new List<Exam>();
-
-      return true;
+      return loadedStudent.Load(filename);
     }
 
 
