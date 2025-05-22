@@ -1,82 +1,59 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 
-namespace GenealogySimulator
+public class Program
 {
-  public interface IHasName
+  public static async Task Main(string[] args)
   {
-    string Name { get; }
-  }
+    Console.WriteLine("Matrix Multiplication using TPL Dataflow");
+    Console.WriteLine("Press ESC to cancel the operation at any time.");
+    Console.WriteLine("------------------------------------------");
 
-  public enum Gender
-  {
-    Male,
-    Female
-  }
+    Matrix a = Matrix.GenerateRandom(50, 30, seed: 1);
+    Matrix b = Matrix.GenerateRandom(30, 60, seed: 2);
 
-  class Program
-  {
-    private static readonly Random Rand = new Random();
-    private static readonly List<Type> MaleTypes = new List<Type> { typeof(Student), typeof(Botan) };
-    private static readonly List<Type> FemaleTypes = new List<Type> { typeof(Girl), typeof(PrettyGirl), typeof(SmartGirl) };
+    a.Print(5, 5, "Matrix A (partial)");
+    b.Print(5, 5, "Matrix B (partial)");
 
-    static Human CreateRandomHuman(List<Type> types)
+    var cts = new CancellationTokenSource();
+
+    var cancellationListener = Task.Run(() =>
     {
-      Type type = types[Rand.Next(types.Count)];
-      return (Human)Activator.CreateInstance(type);
-    }
-
-    static void Main(string[] args)
-    {
-      Console.OutputEncoding = System.Text.Encoding.UTF8;
-
-      if (DateTime.Now.DayOfWeek == DayOfWeek.Sunday)
+      Console.WriteLine("\nPress ESC to cancel...");
+      while (!cts.IsCancellationRequested)
       {
-        Console.WriteLine("Сьогодні неділя, консоль не працює. Приходьте завтра!");
-        Console.ReadKey();
-        return;
-      }
-
-      Console.WriteLine("Симулятор знайомств запущено!");
-      Console.WriteLine("Натисніть Enter для створення нової пари, Q або F10 для виходу.");
-      Console.WriteLine("----------------------------------------------------");
-
-      while (true)
-      {
-        Human person1 = CreateRandomHuman(MaleTypes);
-        Human person2 = CreateRandomHuman(FemaleTypes);
-
-        try
+        if (Console.KeyAvailable && Console.ReadKey(true).Key == ConsoleKey.Escape)
         {
-          IHasName child = MeetingSimulator.Couple(person1, person2);
-        }
-        catch (SameGenderException ex)
-        {
-          Console.ForegroundColor = ConsoleColor.Red;
-          Console.WriteLine($"Помилка: {ex.Message}");
-          Console.ResetColor();
-        }
-        catch (Exception ex)
-        {
-          Console.ForegroundColor = ConsoleColor.DarkYellow;
-          Console.WriteLine($"Сталася неочікувана помилка: {ex.Message}");
-          Console.ResetColor();
-        }
-
-        Console.WriteLine("----------------------------------------------------");
-        Console.Write("Натисніть Enter для наступної пари, Q або F10 для виходу: ");
-        ConsoleKeyInfo keyInfo = Console.ReadKey();
-        Console.WriteLine();
-
-        if (keyInfo.Key == ConsoleKey.Q || keyInfo.Key == ConsoleKey.F10)
-        {
+          Console.WriteLine("\nESC pressed. Requesting cancellation...");
+          cts.Cancel();
           break;
         }
+        Thread.Sleep(100);
       }
-      Console.WriteLine("Симулятор завершує роботу.");
+    });
+
+    Stopwatch stopwatch = Stopwatch.StartNew();
+    Matrix? result = await MatrixMultiplier.MultiplyAsync(a, b, cts.Token);
+    stopwatch.Stop();
+
+    if (result != null)
+    {
+      Console.WriteLine($"\nMultiplication completed in {stopwatch.ElapsedMilliseconds} ms.");
+      result.Print(10, 10, "Result Matrix C (partial)");
     }
+    else
+    {
+      Console.WriteLine($"\nMultiplication did not complete or was cancelled. Time elapsed: {stopwatch.ElapsedMilliseconds} ms.");
+    }
+
+    if (!cancellationListener.IsCompleted)
+    {
+      if (!cts.IsCancellationRequested) cts.Cancel();
+      await cancellationListener;
+    }
+    Console.WriteLine("Program finished. Press any key to exit.");
+    Console.ReadKey();
   }
 }
